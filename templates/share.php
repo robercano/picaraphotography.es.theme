@@ -44,12 +44,31 @@
 				ui_use_css : true,
 				data_track_addressbar : false,
 				data_track_clickback : false
-			};
+            };
+            <?php
+            $page_title = html_entity_decode(get_the_title(), ENT_COMPAT, 'UTF-8');
+            if(isset($_GET['image']) and !empty($_GET['image'])) {
+                if( !Bw::get_option( 'hide_single_image_titles' ) ) { 
+                    $attachment = get_post( (int)$_GET['image'] );
+                }
+        ?>
 			addthis_share = {
 				url : "<?php echo add_query_arg( array( 'image' => $_GET['image'] ), get_permalink() ); ?>",
-				title : "<?php Bw::page_title(); ?>",
+				title : "<?php echo $page_title . ' - ' . $attachment->post_title; ?>",
+                description : "<?php echo trim(strip_tags(get_the_excerpt())) ?>",
+                passthrough : {
+                    twitter : {
+                        text: "<?php echo $page_title . ' - ' . $attachment->post_title; ?>"
+                    }
+                }
+            };
+        <?php } else { ?>
+			addthis_share = {
+				url : "<?php echo add_query_arg( array( 'image' => $_GET['image'] ), get_permalink() ); ?>",
+				title : "<?php echo $page_title; ?>",
 				description : "<?php echo trim(strip_tags(get_the_excerpt())) ?>"
-			};
+            };
+        <?php } ?>
 		</script>
 		<!-- AddThis Button END -->
 		
